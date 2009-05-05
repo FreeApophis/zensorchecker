@@ -103,9 +103,12 @@ namespace apophis.ZensorChecker
             foreach(IPAddress dnsserver in this.dnsServers) {
                 if((dnsserver.ToString() == DNSHelper.OpenDNS1.ToString()) || (dnsserver.ToString() == DNSHelper.OpenDNS2.ToString())) {
                     Console.Write("Warning: one of your DNS Servers is an OpenDNS Server, which is not censored. Check might give invalid results.");
+                    Thread.Sleep(5000);
+
                 }
                 if((dnsserver.ToString().StartsWith("10.")) || (dnsserver.ToString().StartsWith("192.168."))) {
                     Console.Write("Warning: Your DNS seems to be a local adress, the gateway probably relies the request to your ISPs DNS, however its not transparent which DNS Server we actually use.");
+                    Thread.Sleep(5000);
                 }
             }
             
@@ -136,7 +139,7 @@ namespace apophis.ZensorChecker
                 this.isCensoring = false;
                 return;
             }
-            Console.WriteLine();
+            Console.WriteLine("We test now which adresses get censored. This will take very long.");
             Console.WriteLine();
             
             IPAddress providerDNS = null;
@@ -179,6 +182,9 @@ namespace apophis.ZensorChecker
             if((this.reportReady) || (this.censorRedirect != null)) {
                 return;
             }
+
+            Console.WriteLine("We try to find if you get censored, and to which IP you get redirected! This will take very long! If you know the redirct, use --censorhint to skip this test.");
+            Console.WriteLine();
 
             Dictionary<string, int> censoringIPs = new Dictionary<string, int>();
             foreach(string url in this.urlsToTest) {

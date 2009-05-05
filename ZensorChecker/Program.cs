@@ -101,13 +101,18 @@ namespace apophis.ZensorChecker
                 cr.DnsServerHint(dnshint);
             }
             
+            Console.Clear();
             
             cr.GetCensoringIP(); // returns without test if a hint was given
+            
+            Console.Clear();
+            
             cr.RunCheck();
             
+            Console.Clear();
             
             cr.PrintReport(Console.Out);
-            cr.PrintReport(new StreamWriter("report.txt", false));
+            cr.PrintReport(new StreamWriter("report-" + DateTime.Now.ToString() + ".txt", false));
             
             return;
         }
