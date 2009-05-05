@@ -7,13 +7,14 @@
  * Sie können diese Vorlage unter Extras > Optionen > Codeerstellung > Standardheader ändern.
  */
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Reflection;
 using System.Threading;
 
-using Bdev.Net.Dns;
 using apophis.Tools;
+using Bdev.Net.Dns;
 
 namespace apophis.ZensorChecker
 {
@@ -34,6 +35,12 @@ namespace apophis.ZensorChecker
                 return;
             }
 
+            if (argsParsed["-version"] != null)
+            {
+                Help.printVersionInfo();
+                return;
+            }
+
             if ((argsParsed["l"] != null) || (argsParsed["-list"] != null))
             {
                 string url;
@@ -44,6 +51,7 @@ namespace apophis.ZensorChecker
                 return;
             }
             
+            
             if ((argsParsed["c"] != null) || (argsParsed["-country"] != null))
             {
                 if (argsParsed["c"] != null) {
@@ -51,8 +59,8 @@ namespace apophis.ZensorChecker
                 } else {
                     country = (string)argsParsed["-country"][0];
                 }
-            }
-
+            }          
+            
             if ((argsParsed["p"] != null) || (argsParsed["-provider"] != null))
             {
                 if (argsParsed["p"] != null) {
@@ -78,17 +86,29 @@ namespace apophis.ZensorChecker
                 cr.CensorServerHint(IPAddress.Parse((string)argsParsed["-censorhint"][0]));
             }
             
-            //);
+            if ((argsParsed["d"] != null) || (argsParsed["-dnshint"] != null))
+            {
+                List<IPAddress> dnshint = new List<IPAddress>();
+                if (argsParsed["d"] != null) {
+                    foreach(string ip in argsParsed["d"]) {
+                        dnshint.Add(IPAddress.Parse(ip));
+                    }
+                } else {
+                    foreach(string ip in argsParsed["-dnshint"]) {
+                        dnshint.Add(IPAddress.Parse(ip));
+                    }
+                }
+                cr.DnsServerHint(dnshint);
+            }
             
             
-            cr.GetCensoringIP(); // hint censor IP to speed up
+            cr.GetCensoringIP(); // returns without test if a hint was given
             cr.RunCheck();
             
             
             cr.PrintReport(Console.Out);
             cr.PrintReport(new StreamWriter("report.txt", false));
             
-            Thread.Sleep(20000);
             return;
         }
         

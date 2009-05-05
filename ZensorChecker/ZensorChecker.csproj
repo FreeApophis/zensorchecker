@@ -64,7 +64,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Bdev.Net.Dns\Bdev.Net.Dns.csproj">
+    <ProjectReference Include="..\Bdev.Net.Dns\Bdev.Net.Dns.csproj">
       <Project>{6D765924-73E9-49AE-8A97-DA24958A540C}</Project>
       <Name>Bdev.Net.Dns</Name>
     </ProjectReference>

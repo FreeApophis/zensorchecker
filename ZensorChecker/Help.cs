@@ -27,7 +27,8 @@ namespace apophis.ZensorChecker
             System.Console.WriteLine();
             System.Console.WriteLine("Options:");
             System.Console.WriteLine("  -c  --country          Specify your country");
-            System.Console.WriteLine("      --censorhint       Non-pure Server stats");
+            System.Console.WriteLine("      --censorhint       If you know the redirect IP, hint it");
+            System.Console.WriteLine("  -d  --dnshint          Check a certain DNS Server for Censorship");
             System.Console.WriteLine("  -h  --help             This help");
             System.Console.WriteLine("  -l  --list             List all urls in the baselist");
             System.Console.WriteLine("  -p, --provider         Specify your provider ");
@@ -41,5 +42,17 @@ namespace apophis.ZensorChecker
             System.Console.WriteLine();
             return;
         }
+        
+        public static void printVersionInfo()
+        {
+            System.Console.WriteLine();
+            System.Console.WriteLine(System.Reflection.Assembly.GetEntryAssembly().FullName);
+            System.Console.WriteLine();
+            System.Console.WriteLine("This is free software.  You may redistribute copies of it under the terms of the GNU General Public License <http://www.gnu.org/licenses/gpl.html>.There is NO WARRANTY, to the extent permitted by law.");
+            System.Console.WriteLine();
+            System.Console.WriteLine("Written by Thomas Bruderer");
+            return;
+        }
+        
     }
 }
