@@ -106,13 +106,14 @@ namespace apophis.ZensorChecker
             cr.GetCensoringIP(); // returns without test if a hint was given
             
             Console.Clear();
-            
             cr.RunCheck();
             
             Console.Clear();
             
             cr.PrintReport(Console.Out);
-            cr.PrintReport(new StreamWriter("report-" + DateTime.Now.ToString() + ".txt", false));
+            TextWriter tw = new StreamWriter("report-" + DateTime.Now.Year + "-"+ DateTime.Now.Month + "-"+ DateTime.Now.Day + "-"+ DateTime.Now.Hour + "-"+ DateTime.Now.Minute + ".txt", false);
+            cr.PrintReport(tw);
+            tw.Close();
             
             return;
         }

@@ -124,6 +124,7 @@ namespace apophis.ZensorChecker
         
         public void CensorServerHint(IPAddress ip) {
             this.censorRedirect = ip;
+            this.isCensoring = true;
         }
         
         public void DnsServerHint(IEnumerable<IPAddress> ips) {
@@ -155,19 +156,19 @@ namespace apophis.ZensorChecker
                     request.AddQuestion(new Question(url, DnsType.ANAME, DnsClass.IN));
                     Response response = Resolver.Lookup(request, providerDNS);
                     if (((ANameRecord)response.Answers[0].Record).IPAddress.ToString() == this.censorRedirect.ToString()) {
-                        PrintStatusLine("> " + i  + "/" + urlsToTest.Count + " : " + url + " [Censored]                                        ");
+                        Console.WriteLine("> " + i  + "/" + urlsToTest.Count + " : " + url + " [Censored]");
                         //Console.Write("x");
                         Monitor.Enter(this.cenosredUrls);
                         this.cenosredUrls.Add(url);
                         Monitor.Exit(this.cenosredUrls);
                     }
                     else {
-                        PrintStatusLine("> " + i  + "/" + urlsToTest.Count + " : " + url + " [Open]                                        ");
+                        Console.WriteLine("> " + i  + "/" + urlsToTest.Count + " : " + url + " [Open]");
                         //Console.Write("o");
                     }
                 }
                 catch (Exception) {
-                    Console.Write("-");
+                    Console.WriteLine("> " + i  + "/" + urlsToTest.Count + " : " + url + " [Skipped]");
                 }
             }
             
@@ -275,6 +276,7 @@ namespace apophis.ZensorChecker
                 sw.WriteLine("Censor IP : "+ censorRedirect);
                 sw.WriteLine("---------------------------");
 
+                cenosredUrls.Sort();
                 foreach(string url in cenosredUrls) {
                     sw.WriteLine("Censoring : " + url);
                 }
@@ -286,7 +288,6 @@ namespace apophis.ZensorChecker
             
             sw.WriteLine("-----------------");
             sw.WriteLine("apophis.ch - 2009");
-            
         }
         
         private void PrintStatusLine(string line) {
