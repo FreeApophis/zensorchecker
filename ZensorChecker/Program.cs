@@ -25,6 +25,7 @@ namespace apophis.ZensorChecker
         public static void Main(string[] args)
         {
             Arguments argsParsed = new Arguments(args);
+            
             string country = "none";
             string provider = "ISP";
             string reporter = "Anonymous";
@@ -51,6 +52,11 @@ namespace apophis.ZensorChecker
                 return;
             }
             
+            if ((argsParsed["n"] == null) && (argsParsed["-noauto"] == null)) {
+                CountryISP autodetect = new CountryISP();
+                country = autodetect.Country;
+                provider = autodetect.Isp;
+            }
             
             if ((argsParsed["c"] != null) || (argsParsed["-country"] != null))
             {
@@ -59,7 +65,7 @@ namespace apophis.ZensorChecker
                 } else {
                     country = (string)argsParsed["-country"][0];
                 }
-            }          
+            }
             
             if ((argsParsed["p"] != null) || (argsParsed["-provider"] != null))
             {

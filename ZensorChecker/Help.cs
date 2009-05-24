@@ -31,6 +31,7 @@ namespace apophis.ZensorChecker
             System.Console.WriteLine("  -d  --dnshint          Check a certain DNS Server for Censorship");
             System.Console.WriteLine("  -h  --help             This help");
             System.Console.WriteLine("  -l  --list             List all urls in the baselist");
+            System.Console.WriteLine("  -n  --noauto           Don't detect ISP/Country automatically");
             System.Console.WriteLine("  -p, --provider         Specify your provider ");
             System.Console.WriteLine("  -r, --reporter         Specify your name");
             System.Console.WriteLine("  -v, --verbose          Debug information ");

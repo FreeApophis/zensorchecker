@@ -53,20 +53,37 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Arguments.cs" />
     <Compile Include="CensorshipReport.cs" />
+    <Compile Include="dnsclient\ANameRecord.cs" />
+    <Compile Include="dnsclient\Enums.cs" />
+    <Compile Include="dnsclient\InvalidResponseException.cs" />
+    <Compile Include="dnsclient\MXRecord.cs" />
+    <Compile Include="dnsclient\NoResponseException.cs" />
+    <Compile Include="dnsclient\NSRecord.cs" />
+    <Compile Include="dnsclient\Pointer.cs" />
+    <Compile Include="dnsclient\Question.cs" />
+    <Compile Include="dnsclient\RecordBase.cs" />
+    <Compile Include="dnsclient\Request.cs" />
+    <Compile Include="dnsclient\Resolver.cs" />
+    <Compile Include="dnsclient\ResourceRecord.cs" />
+    <Compile Include="dnsclient\Response.cs" />
+    <Compile Include="dnsclient\SoaRecord.cs" />
     <Compile Include="DNSHelper.cs" />
     <Compile Include="Help.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StopSpider.cs" />
+    <Compile Include="Tools\Arguments.cs" />
+    <Compile Include="Tools\CountryISP.cs" />
     <EmbeddedResource Include="baselist.txt">
       <LogicalName>baselist.txt</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="falsepositivs.txt">
+      <LogicalName>falsepositivs.txt</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Bdev.Net.Dns\Bdev.Net.Dns.csproj">
-      <Project>{6D765924-73E9-49AE-8A97-DA24958A540C}</Project>
-      <Name>Bdev.Net.Dns</Name>
-    </ProjectReference>
+    <Folder Include="dnsclient" />
+    <Folder Include="Tools" />
   </ItemGroup>
 </Project>
