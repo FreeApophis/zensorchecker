@@ -36,6 +36,30 @@ namespace apophis.ZensorChecker
             get { return isp; }
         }
         
+        private string region;
+        
+        public string Region {
+            get { return region; }
+        }
+        
+        private string city;
+        
+        public string City {
+            get { return city; }
+        }
+        
+        private string timezone;
+        
+        public string Timezone {
+            get { return timezone; }
+        }
+        
+        private string networkspeed;
+        
+        public string Networkspeed {
+            get { return networkspeed; }
+        }
+        
         private Regex strongMatch = new Regex(@"(?<=<strong>)[^<]*(?=</strong>)");
         public CountryISP()
         {
@@ -48,10 +72,14 @@ namespace apophis.ZensorChecker
             string line;
             while((line = reader.ReadLine())!= null) {
                 MatchCollection mc = strongMatch.Matches(line);
-                if(mc.Count > 0) {
+                if(mc.Count > 6) {
                     externalIP = IPAddress.Parse(mc[0].Value);
                     isp = mc[1].Value;
                     country = mc[2].Value;
+                    region = mc[3].Value;
+                    city = mc[4].Value;
+                    timezone = mc[5].Value;
+                    networkspeed = mc[6].Value;
                 }
             }
         }

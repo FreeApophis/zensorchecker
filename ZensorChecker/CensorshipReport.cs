@@ -239,25 +239,28 @@ namespace apophis.ZensorChecker
             Console.WriteLine();
             Console.WriteLine();
             int newmax = 0;
-            #if DEBUG
-            TextWriter falsepositives = new StreamWriter("falsepositives" + DateTime.Now.Year + "-"+ DateTime.Now.Month + "-"+ DateTime.Now.Day + "-"+ DateTime.Now.Hour + "-"+ DateTime.Now.Minute + ".txt", false);
-            #endif
+
             RemoveFalsePositives(censoringIPs);
+
+#if DEBUG
+            TextWriter falsepositives = new StreamWriter("falsepositives" + DateTime.Now.Year + "-"+ DateTime.Now.Month + "-"+ DateTime.Now.Day + "-"+ DateTime.Now.Hour + "-"+ DateTime.Now.Minute + ".txt", false);
+#endif
             
             foreach(KeyValuePair<string, int> kvp in censoringIPs) {
                 Console.WriteLine(kvp.Key + " has #" + kvp.Value);
                 #if DEBUG
                 falsepositives.WriteLine(kvp.Key + " has #" + kvp.Value);
                 #endif
-                if((kvp.Value > 5) && (kvp.Value > newmax)) {
+                if((kvp.Value > 10) && (kvp.Value > newmax)) {
                     newmax = kvp.Value;
                     this.censorRedirect = IPAddress.Parse(kvp.Key);
                     this.isCensoring = true;
                 }
             }
-            #if DEBUG
+            
+#if DEBUG
             falsepositives.Close();
-            #endif
+#endif
             
             Console.WriteLine();
             cenosredUrls.Sort();
@@ -274,13 +277,13 @@ namespace apophis.ZensorChecker
             }
             
             foreach(string cip in censoringIPs.Keys) {
-                if(falsepos.Contains(ip)) {
-                    toremove.Add(ip);
+                if(falsepos.Contains(cip)) {
+                    toremove.Add(cip);
                 }
             }
             
             foreach(string cip in toremove) {
-                censoringIPs.Remove(ip);
+                censoringIPs.Remove(cip);
             }
         }
         
