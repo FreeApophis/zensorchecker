@@ -4,8 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # SharpDevelop 3.0.0.3437
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZensorChecker", "ZensorChecker\ZensorChecker.csproj", "{118F7239-4177-4C20-96D2-E1A6573239B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bdev.Net.Dns", "Bdev.Net.Dns\Bdev.Net.Dns.csproj", "{6D765924-73E9-49AE-8A97-DA24958A540C}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -16,9 +14,5 @@ Global
 		{118F7239-4177-4C20-96D2-E1A6573239B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{118F7239-4177-4C20-96D2-E1A6573239B1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{118F7239-4177-4C20-96D2-E1A6573239B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6D765924-73E9-49AE-8A97-DA24958A540C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6D765924-73E9-49AE-8A97-DA24958A540C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6D765924-73E9-49AE-8A97-DA24958A540C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6D765924-73E9-49AE-8A97-DA24958A540C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 EndGlobal
