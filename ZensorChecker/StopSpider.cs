@@ -52,11 +52,7 @@ namespace apophis.ZensorChecker
            
             foreach(string uri in rlist.Values) {
                 spiderlist.Add(new SpiderInfo(uri, 0));
-                try {
                 spidercheck.Add(uri, true);
-                } catch {
-                    Console.WriteLine(uri);
-                }
             }
 
         }
@@ -71,7 +67,7 @@ namespace apophis.ZensorChecker
         private SpiderInfo lastfinshed;
         
         public void CrawlSpiderList() {
-            int index = 0;
+            int index = 0; lastfinshed = spiderlist[0];
             while(crawl) {
 
                 if(index >= spiderlist.Count || pooled >= 100) {
