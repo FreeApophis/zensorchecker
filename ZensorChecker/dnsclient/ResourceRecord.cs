@@ -35,7 +35,7 @@ namespace Bdev.Net.Dns
 		/// Construct a resource record from a pointer to a byte array
 		/// </summary>
 		/// <param name="pointer">the position in the byte array of the record</param>
-		internal ResourceRecord(Pointer pointer)
+		internal ResourceRecord(ref Pointer pointer)
 		{
 			// extract the domain, question type, question class and Ttl
 			_domain = pointer.ReadDomain();
@@ -51,6 +51,7 @@ namespace Bdev.Net.Dns
 			{
 				case DnsType.NS:	_record = new NSRecord(pointer);	break;
 				case DnsType.MX:	_record = new MXRecord(pointer);	break;
+                case DnsType.CNAME: _record = new NSRecord(pointer);    break;								
 				case DnsType.ANAME:	_record = new ANameRecord(pointer);	break;
 				case DnsType.SOA:	_record = new SoaRecord(pointer);	break;
 				default:
@@ -67,18 +68,18 @@ namespace Bdev.Net.Dns
 	[Serializable]
 	public class Answer : ResourceRecord
 	{
-		internal Answer(Pointer pointer) : base(pointer) {}
+		internal Answer(ref Pointer pointer) : base(ref pointer) {}
 	}
 
 	[Serializable]
 	public class NameServer : ResourceRecord
 	{
-		internal NameServer(Pointer pointer) : base(pointer) {}
+		internal NameServer(ref Pointer pointer) : base(ref pointer) {}
 	}
 
 	[Serializable]
 	public class AdditionalRecord : ResourceRecord
 	{
-		internal AdditionalRecord(Pointer pointer) : base(pointer) {}
+		internal AdditionalRecord(ref Pointer pointer) : base(ref pointer) {}
 	}
 }

@@ -72,18 +72,24 @@
     <Compile Include="Help.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Resources\shortlist.txt">
+      <LogicalName>shortlist.txt</LogicalName>
+    </EmbeddedResource>
+    <Compile Include="SpiderInfo.cs" />
     <Compile Include="StopSpider.cs" />
     <Compile Include="Tools\Arguments.cs" />
     <Compile Include="Tools\CountryISP.cs" />
-    <EmbeddedResource Include="baselist.txt">
+    <Compile Include="UrlInfo.cs" />
+    <EmbeddedResource Include="Resources\baselist.txt">
       <LogicalName>baselist.txt</LogicalName>
     </EmbeddedResource>
-    <EmbeddedResource Include="falsepositivs.txt">
+    <EmbeddedResource Include="Resources\falsepositivs.txt">
       <LogicalName>falsepositivs.txt</LogicalName>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="dnsclient" />
+    <Folder Include="Resources" />
     <Folder Include="Tools" />
   </ItemGroup>
 </Project>

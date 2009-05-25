@@ -84,15 +84,15 @@ namespace Bdev.Net.Dns
 			}
 			for (int index = 0; index < _answers.Length; index++)
 			{
-				_answers[index] = new Answer(pointer);
+				_answers[index] = new Answer(ref pointer);
 			}
 			for (int index = 0; index < _nameServers.Length; index++)
 			{
-				_nameServers[index] = new NameServer(pointer);
+				_nameServers[index] = new NameServer(ref pointer);
 			}
 			for (int index = 0; index < _additionalRecords.Length; index++)
 			{
-				_additionalRecords[index] = new AdditionalRecord(pointer);
+				_additionalRecords[index] = new AdditionalRecord(ref pointer);
 			}
 		}
 	

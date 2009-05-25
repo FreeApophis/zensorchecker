@@ -24,6 +24,7 @@ namespace apophis.ZensorChecker
     {
         public static void Main(string[] args)
         {
+            
             Arguments argsParsed = new Arguments(args);
             
             string country = "none";
@@ -107,8 +108,13 @@ namespace apophis.ZensorChecker
                 cr.DnsServerHint(dnshint);
             }
             
-            Console.Clear();
-            
+#if DEBUG
+            StopSpider spider = new StopSpider(IPAddress.Parse("192.168.1.1"), IPAddress.Parse("212.142.48.154"));
+            spider.CrawlSpiderList();
+            Thread.Sleep(60000);
+            return;
+#endif
+                        
             cr.GetCensoringIP(); // returns without test if a hint was given
             
             Console.Clear();

@@ -87,7 +87,7 @@ namespace apophis.ZensorChecker
             SortedList<int, string> rlist = new SortedList<int, string>();
             
             //foreach(string res in Assembly.GetExecutingAssembly().GetManifestResourceNames()) {
-            //    Console.Write("Resource: " + res);
+            //    Console.WriteLine("Resource: " + res);
             //}
 
             TextReader inputurls = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("baselist.txt"));
@@ -115,18 +115,26 @@ namespace apophis.ZensorChecker
             //Date
             this.date = DateTime.Now;
             
-            //Hints
+            //Account Information
             this.provider = provider;
             this.country = country;
             this.reporter = reporter;
             
         }
         
+        /// <summary>
+        /// You already know the IP adress of the censoring Server
+        /// </summary>
+        /// <param name="ip"></param>
         public void CensorServerHint(IPAddress ip) {
             this.censorRedirect = ip;
             this.isCensoring = true;
         }
         
+        /// <summary>
+        /// you want to use another DNS Server than the one in your local settings.
+        /// </summary>
+        /// <param name="ips"></param>
         public void DnsServerHint(IEnumerable<IPAddress> ips) {
             this.dnsServers = ips;
         }

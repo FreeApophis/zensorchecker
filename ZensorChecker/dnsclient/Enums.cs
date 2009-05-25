@@ -18,7 +18,7 @@ namespace Bdev.Net.Dns
 	/// </summary>
 	public enum DnsType
 	{
-		None = 0, ANAME = 1, NS = 2, SOA = 6, MX = 15
+	    None = 0, ANAME = 1, NS = 2, CNAME = 5, SOA = 6, MX = 15
 	}
 
 	/// <summary>
