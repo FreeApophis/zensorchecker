@@ -109,9 +109,8 @@ namespace apophis.ZensorChecker
             }
             
 #if DEBUG
-            StopSpider spider = new StopSpider(IPAddress.Parse("192.168.1.1"), IPAddress.Parse("212.142.48.154"));
+            StopSpider spider = new StopSpider(IPAddress.Parse("192.168.1.1"), IPAddress.Parse("212.142.48.154"), provider, country, reporter);
             spider.CrawlSpiderList();
-            Thread.Sleep(60000);
             return;
 #endif
                         

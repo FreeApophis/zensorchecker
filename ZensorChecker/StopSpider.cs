@@ -33,13 +33,19 @@ namespace apophis.ZensorChecker
         private IPAddress providerDNS;
 
         private IPAddress censorRedirect;
+        private string provider;
+        private string country;
+        private string reporter;
         
-        public StopSpider(IPAddress providerDNS, IPAddress censorRedirect)
+        public StopSpider(IPAddress providerDNS, IPAddress censorRedirect, string provider, string country, string reporter)
         {
             // initiate spiderlist
             
             this.providerDNS = providerDNS;
             this.censorRedirect = censorRedirect;
+            this.provider = provider;
+            this.country = country;
+            this.reporter = reporter;
             
              // add an initial list in randomized order, this will also prevent adding already known urls!
             SortedList<int, string> rlist = new SortedList<int, string>();
@@ -113,7 +119,7 @@ namespace apophis.ZensorChecker
             TextWriter tw = new StreamWriter(client.GetStream());
             tw.WriteLine("GET / HTTP/1.1");
             tw.WriteLine("Host: " + ((SpiderInfo)spiderInfo).URL);
-            tw.WriteLine("User-Agent: Mozilla/5.0 (compatible; zensorchecker/" + this.GetType().Assembly.GetName().Version.ToString() + ";  http://zensorchecker.origo.ethz.ch/");
+            tw.WriteLine("User-Agent: Mozilla/5.0 (compatible; zensorchecker/" + this.GetType().Assembly.GetName().Version.ToString() + ";  http://zensorchecker.origo.ethz.ch/)");
             tw.WriteLine();
             tw.Flush();
             
@@ -152,6 +158,16 @@ namespace apophis.ZensorChecker
                 request.AddQuestion(new Question(spiderInfo.URL, DnsType.ANAME, DnsClass.IN));
                 Response response = Resolver.Lookup(request, providerDNS);
                 if (((ANameRecord)response.Answers[0].Record).IPAddress.ToString() == this.censorRedirect.ToString()) {
+                    switch(PostNewFoundUrl(spiderInfo.URL)) {
+                        case ReturnState.OK:
+                            break;
+                        case ReturnState.Failed:
+                            break;
+                        case ReturnState.NotNew:
+                            break;
+                    }
+                    
+                    
                     Console.WriteLine("> " + spiderInfo.URL + " (" + spiderInfo.Depth + ") [NEW Censored]");
                     spiderInfo.Censored = true;
                     
@@ -183,14 +199,33 @@ namespace apophis.ZensorChecker
             } catch(NoResponseException) {
                 //happens
             } catch(OverflowException) {
-                //BUG in DNSResolver, will update to another one!
+                //BUG in DNSResolver, should update to another one!
             }
             return null;
         }
 
+        public enum ReturnState {
+            OK, NotNew, Failed
+        }
         
-        
-        
-        
+        public ReturnState PostNewFoundUrl(string url) {
+            WebClient web = new WebClient();
+            
+            web.QueryString.Add("url", url); // new URL
+            web.QueryString.Add("rip", this.censorRedirect.ToString()); // Redirected to
+            web.QueryString.Add("cnt", this.country); // Country
+            web.QueryString.Add("isp", this.provider); // ISP
+            web.QueryString.Add("rep", this.reporter); // Reporter
+            
+            string s = web.DownloadString("http://apophis.ch/zensorchecker.php");
+            if (s.EndsWith("[OK]")) {
+                return ReturnState.OK;
+            } else if (s.EndsWith("[NOTNEW]")) {
+                return ReturnState.NotNew;
+            } else {
+                return ReturnState.Failed;
+            }
+            
+        }
     }
 }
