@@ -16,6 +16,10 @@ using System.Threading;
 using apophis.Tools;
 using Bdev.Net.Dns;
 
+#if GUI
+using System.Windows.Forms;
+#endif
+
 namespace apophis.ZensorChecker
 {
 
@@ -108,12 +112,24 @@ namespace apophis.ZensorChecker
                 cr.DnsServerHint(dnshint);
             }
             
-#if DEBUG
+            #if GUI
+            bool gui = true;
+            if (argsParsed["c"] != null || argsParsed["-console"] != null)
+            {
+                gui = false;
+            }
+            
+            if(gui) {
+                Application.Run(new MainForm());
+            }
+            #endif
+            
+            #if DEBUG
             StopSpider spider = new StopSpider(IPAddress.Parse("192.168.1.1"), IPAddress.Parse("212.142.48.154"), provider, country, reporter);
             spider.CrawlSpiderList();
             return;
-#endif
-                        
+            #endif
+            
             cr.GetCensoringIP(); // returns without test if a hint was given
             
             Console.Clear();
