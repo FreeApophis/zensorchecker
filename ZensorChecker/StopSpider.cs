@@ -1,11 +1,28 @@
-﻿/*
- * Erstellt mit SharpDevelop.
- * Benutzer: apophis
- * Datum: 24.05.2009
- * Zeit: 16:45
+﻿/**
+ * Project: Zensorchecker: A dns checker to identify potentiel zensoring from you 
+ * File name: Program.cs
+ * Description:  
+ *   
+ * @author Thomas Bruderer, www.apophis.ch, apophis@apophis.ch, Copyright (C) 2009-2011
+ * @version 0.6
+ *   
+ * @see The GNU Public License (GPL)
+ *
+ * This program is free software; you can redistribute it and/or modify 
+ * it under the terms of the GNU General Public License as published by 
+ * the Free Software Foundation; either version 2 of the License, or 
+ * (at your option) any later version.
  * 
- * Sie können diese Vorlage unter Extras > Optionen > Codeerstellung > Standardheader ändern.
- */
+ * This program is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
+ * for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along 
+ * with this program; if not, write to the Free Software Foundation, Inc., 
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ **/
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,95 +43,106 @@ namespace apophis.ZensorChecker
     public class StopSpider
     {
         List<SpiderInfo> spiderlist = new List<SpiderInfo>();
-        
+
         // for fast existence lookup only!
         Dictionary<string, bool> spidercheck = new Dictionary<string, bool>();
-        
+
         private IPAddress providerDNS;
 
         private IPAddress censorRedirect;
         private string provider;
         private string country;
         private string reporter;
-        
+
         public StopSpider(IPAddress providerDNS, IPAddress censorRedirect, string provider, string country, string reporter)
         {
             // initiate spiderlist
-            
+
             this.providerDNS = providerDNS;
             this.censorRedirect = censorRedirect;
             this.provider = provider;
             this.country = country;
             this.reporter = reporter;
-            
-             // add an initial list in randomized order, this will also prevent adding already known urls!
+
+            // add an initial list in randomized order, this will also prevent adding already known urls!
             SortedList<int, string> rlist = new SortedList<int, string>();
             TextReader inputurls = new StreamReader(Assembly.GetExecutingAssembly().GetManifestResourceStream("shortlist.txt"));
             string url; Random r = new Random();
-            while((url = inputurls.ReadLine()) != null) {
+            while ((url = inputurls.ReadLine()) != null)
+            {
                 rlist.Add(r.Next(), url);
             }
-            
-           
-            foreach(string uri in rlist.Values) {
+
+
+            foreach (string uri in rlist.Values)
+            {
                 spiderlist.Add(new SpiderInfo(uri, 0));
                 spidercheck.Add(uri, true);
             }
 
         }
-        
-        public void PublishNewUrls() {
-            
+
+        public void PublishNewUrls()
+        {
+
         }
-        
+
         private bool crawl = true;
         private int pooled = 0;
-        private int running = 0;        
+        private int running = 0;
         private SpiderInfo lastfinshed;
-        
-        public void CrawlSpiderList() {
-            int index = 0; lastfinshed = spiderlist[0];
-            while(crawl) {
 
-                if(index >= spiderlist.Count || pooled >= 100) {
+        public void CrawlSpiderList()
+        {
+            int index = 0; lastfinshed = spiderlist[0];
+            while (crawl)
+            {
+
+                if (index >= spiderlist.Count || pooled >= 100)
+                {
                     Thread.Sleep(500);
-                    Console.WriteLine("status: i" + (index-1) + "|" + lastfinshed.URL + "|" + lastfinshed.Depth + "|c" + spiderlist.Count+ "|" + running + "/" + pooled);
+                    Console.WriteLine("status: i" + (index - 1) + "|" + lastfinshed.URL + "|" + lastfinshed.Depth + "|c" + spiderlist.Count + "|" + running + "/" + pooled);
                     continue;
                 }
 
                 pooled++;
 
-                ThreadPool.QueueUserWorkItem(FindNewUrls, (object) spiderlist[index]);
-                
+                ThreadPool.QueueUserWorkItem(FindNewUrls, (object)spiderlist[index]);
+
                 index++;
 
             }
         }
-        
+
         private Regex hrefMatch = new Regex("(?<=href=\"http://)[^\"]*(?=\")");
-        
-        private void FindNewUrls(object spiderInfo) {
+
+        private void FindNewUrls(object spiderInfo)
+        {
             running++;
             // We cannot use WebClient or similar, since we cannot rely on the DNS resolution!
             TcpClient client = new TcpClient();
             IPAddress ip = GetRealIPFromUri(((SpiderInfo)spiderInfo).URL);
             //check for censorship
 
-            CheckIfCensored((SpiderInfo) spiderInfo);
-            
-            if(ip == null) {
+            CheckIfCensored((SpiderInfo)spiderInfo);
+
+            if (ip == null)
+            {
                 // Invalid Response
                 pooled--; running--;
                 return;
             }
-            
-            try {
+
+            try
+            {
                 client.Connect(ip, 80);
-            } catch (Exception) {
+            }
+            catch (Exception)
+            {
                 pooled--; running--;
                 return;
             }
-            
+
             //Send Request
             TextWriter tw = new StreamWriter(client.GetStream());
             tw.WriteLine("GET / HTTP/1.1");
@@ -122,25 +150,31 @@ namespace apophis.ZensorChecker
             tw.WriteLine("User-Agent: Mozilla/5.0 (compatible; zensorchecker/" + this.GetType().Assembly.GetName().Version.ToString() + ";  http://zensorchecker.origo.ethz.ch/)");
             tw.WriteLine();
             tw.Flush();
-            
-            
+
+
             TextReader document = new StreamReader(client.GetStream());
             string line;
-            try {
-                while((line = document.ReadLine()) != null) {
+            try
+            {
+                while ((line = document.ReadLine()) != null)
+                {
                     MatchCollection mc = hrefMatch.Matches(line);
-                    
-                    foreach(Match m in mc) {
+
+                    foreach (Match m in mc)
+                    {
                         string href = m.Value + "/";
                         string url = href.Substring(0, href.IndexOf('/'));
-                        if (!spidercheck.ContainsKey(url)) {
-                            spiderlist.Add( new SpiderInfo(url, ((SpiderInfo)spiderInfo).Depth + 1));
+                        if (!spidercheck.ContainsKey(url))
+                        {
+                            spiderlist.Add(new SpiderInfo(url, ((SpiderInfo)spiderInfo).Depth + 1));
                             spidercheck.Add(url, true);
-                            
+
                         }
                     }
                 }
-            } catch (Exception) {
+            }
+            catch (Exception)
+            {
                 ((SpiderInfo)spiderInfo).ReadError = true;
             }
             lastfinshed = (SpiderInfo)spiderInfo;
@@ -149,16 +183,20 @@ namespace apophis.ZensorChecker
 
         void CheckIfCensored(SpiderInfo spiderInfo)
         {
-            if (spiderInfo.Depth==0) {
+            if (spiderInfo.Depth == 0)
+            {
                 // no test needed
                 return;
             }
-            try {
+            try
+            {
                 Request request = new Request();
                 request.AddQuestion(new Question(spiderInfo.URL, DnsType.ANAME, DnsClass.IN));
                 Response response = Resolver.Lookup(request, providerDNS);
-                if (((ANameRecord)response.Answers[0].Record).IPAddress.ToString() == this.censorRedirect.ToString()) {
-                    switch(PostNewFoundUrl(spiderInfo.URL)) {
+                if (((ANameRecord)response.Answers[0].Record).IPAddress.ToString() == this.censorRedirect.ToString())
+                {
+                    switch (PostNewFoundUrl(spiderInfo.URL))
+                    {
                         case ReturnState.OK:
                             break;
                         case ReturnState.Failed:
@@ -166,66 +204,84 @@ namespace apophis.ZensorChecker
                         case ReturnState.NotNew:
                             break;
                     }
-                    
-                    
+
+
                     Console.WriteLine("> " + spiderInfo.URL + " (" + spiderInfo.Depth + ") [NEW Censored]");
                     spiderInfo.Censored = true;
-                    
+
                     TextWriter tw = new StreamWriter("spider.txt", true);
                     tw.WriteLine(spiderInfo.URL);
                     tw.Close();
-                    
+
                 }
-            } catch (Exception) {}
+            }
+            catch (Exception) { }
         }
 
-        
-        private IPAddress GetRealIPFromUri(string uri) {
-            try {
+
+        private IPAddress GetRealIPFromUri(string uri)
+        {
+            try
+            {
                 Request request = new Request();
                 request.AddQuestion(new Question(uri, DnsType.ANAME, DnsClass.IN));
                 Response response = Resolver.Lookup(request, DNSHelper.OpenDNS1);
-                
-                if (response.Answers[0].Record is ANameRecord) {
+
+                if (response.Answers[0].Record is ANameRecord)
+                {
                     return ((ANameRecord)response.Answers[0].Record).IPAddress;
                 }
-                
+
                 // CNAME redirect (infinite loop?)
-                if (response.Answers[0].Record is NSRecord) {
+                if (response.Answers[0].Record is NSRecord)
+                {
                     return GetRealIPFromUri(((NSRecord)response.Answers[0].Record).DomainName);
                 }
-            } catch(ArgumentException) {
+            }
+            catch (ArgumentException)
+            {
                 //Invalid Domain name ignored
-            } catch(NoResponseException) {
+            }
+            catch (NoResponseException)
+            {
                 //happens
-            } catch(OverflowException) {
+            }
+            catch (OverflowException)
+            {
                 //BUG in DNSResolver, should update to another one!
             }
             return null;
         }
 
-        public enum ReturnState {
+        public enum ReturnState
+        {
             OK, NotNew, Failed
         }
-        
-        public ReturnState PostNewFoundUrl(string url) {
+
+        public ReturnState PostNewFoundUrl(string url)
+        {
             WebClient web = new WebClient();
-            
+
             web.QueryString.Add("url", url); // new URL
             web.QueryString.Add("rip", this.censorRedirect.ToString()); // Redirected to
             web.QueryString.Add("cnt", this.country); // Country
             web.QueryString.Add("isp", this.provider); // ISP
             web.QueryString.Add("rep", this.reporter); // Reporter
-            
+
             string s = web.DownloadString("http://apophis.ch/zensorchecker.php");
-            if (s.EndsWith("[OK]")) {
+            if (s.EndsWith("[OK]"))
+            {
                 return ReturnState.OK;
-            } else if (s.EndsWith("[NOTNEW]")) {
+            }
+            else if (s.EndsWith("[NOTNEW]"))
+            {
                 return ReturnState.NotNew;
-            } else {
+            }
+            else
+            {
                 return ReturnState.Failed;
             }
-            
+
         }
     }
 }

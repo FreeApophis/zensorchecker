@@ -1,24 +1,44 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-# SharpDevelop 3.0.0.3437
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZensorChecker", "ZensorChecker\ZensorChecker.csproj", "{118F7239-4177-4C20-96D2-E1A6573239B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZensorCheckerTests", "ZensorCheckerTests\ZensorCheckerTests.csproj", "{CBC82758-BB13-41D4-B433-3B0F92DEEEAF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{118F7239-4177-4C20-96D2-E1A6573239B1} = {118F7239-4177-4C20-96D2-E1A6573239B1}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{31FE9884-CE2E-47A2-BA62-D7A6976E1C65}"
+EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = ZensorChecker.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
-		GUI Release|Any CPU = GUI Release|Any CPU
 		GUI Debug|Any CPU = GUI Debug|Any CPU
+		GUI Release|Any CPU = GUI Release|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{118F7239-4177-4C20-96D2-E1A6573239B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{118F7239-4177-4C20-96D2-E1A6573239B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{118F7239-4177-4C20-96D2-E1A6573239B1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{118F7239-4177-4C20-96D2-E1A6573239B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{118F7239-4177-4C20-96D2-E1A6573239B1}.GUI Release|Any CPU.Build.0 = GUI|Any CPU
-		{118F7239-4177-4C20-96D2-E1A6573239B1}.GUI Release|Any CPU.ActiveCfg = GUI|Any CPU
-		{118F7239-4177-4C20-96D2-E1A6573239B1}.GUI Debug|Any CPU.Build.0 = GUI Debug|Any CPU
+		{118F7239-4177-4C20-96D2-E1A6573239B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{118F7239-4177-4C20-96D2-E1A6573239B1}.GUI Debug|Any CPU.ActiveCfg = GUI Debug|Any CPU
+		{118F7239-4177-4C20-96D2-E1A6573239B1}.GUI Debug|Any CPU.Build.0 = GUI Debug|Any CPU
+		{118F7239-4177-4C20-96D2-E1A6573239B1}.GUI Release|Any CPU.ActiveCfg = GUI Release|Any CPU
+		{118F7239-4177-4C20-96D2-E1A6573239B1}.GUI Release|Any CPU.Build.0 = GUI Release|Any CPU
+		{118F7239-4177-4C20-96D2-E1A6573239B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{118F7239-4177-4C20-96D2-E1A6573239B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBC82758-BB13-41D4-B433-3B0F92DEEEAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBC82758-BB13-41D4-B433-3B0F92DEEEAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBC82758-BB13-41D4-B433-3B0F92DEEEAF}.GUI Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBC82758-BB13-41D4-B433-3B0F92DEEEAF}.GUI Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBC82758-BB13-41D4-B433-3B0F92DEEEAF}.GUI Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBC82758-BB13-41D4-B433-3B0F92DEEEAF}.GUI Release|Any CPU.Build.0 = Release|Any CPU
+		{CBC82758-BB13-41D4-B433-3B0F92DEEEAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBC82758-BB13-41D4-B433-3B0F92DEEEAF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

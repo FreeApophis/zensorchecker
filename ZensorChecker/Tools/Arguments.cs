@@ -1,3 +1,28 @@
+/**
+ * Project: Zensorchecker: A dns checker to identify potentiel zensoring from you 
+ * File name: Program.cs
+ * Description:  
+ *   
+ * @author Thomas Bruderer, www.apophis.ch, apophis@apophis.ch, Copyright (C) 2009-2011
+ * @version 0.6
+ *   
+ * @see The GNU Public License (GPL)
+ *
+ * This program is free software; you can redistribute it and/or modify 
+ * it under the terms of the GNU General Public License as published by 
+ * the Free Software Foundation; either version 2 of the License, or 
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but 
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ * or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License 
+ * for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along 
+ * with this program; if not, write to the Free Software Foundation, Inc., 
+ * 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+ **/
+
 using System;
 using System.Collections;
 using System.Collections.Specialized;
@@ -26,9 +51,9 @@ namespace apophis.Tools
         {
             _parameters = new Hashtable();
             Regex splitter = new Regex(@"^-|^/|=|:",
-                RegexOptions.IgnoreCase|RegexOptions.Compiled);
+                RegexOptions.IgnoreCase | RegexOptions.Compiled);
             Regex remover = new Regex(@"^['""]?(.*?)['""]?$",
-                RegexOptions.IgnoreCase|RegexOptions.Compiled);
+                RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
             string parameter = null;
             string[] parts;
@@ -40,28 +65,28 @@ namespace apophis.Tools
             // -param1 value1 value2 -param2 /param3:"Test" /param4=happy
             foreach (string arg in Args)
             {
-                parts = splitter.Split(arg,3);
+                parts = splitter.Split(arg, 3);
 
-                switch(parts.Length)
+                switch (parts.Length)
                 {
                     // Found value
                     case 1:
                         // if parameter still wait, add value to values-colection
-                        if(parameter != null)
+                        if (parameter != null)
                         {
                             parts[0] = remover.Replace(parts[0], "$1");
                             values.Add(parts[0]);
                         }
                         break;
-                        
+
                     // found parameter
                     case 2:
                         // if paramater was still waiting,
                         // then add parameter and values-collection to _parameters
                         // clear values
-                        if(parameter!=null)
+                        if (parameter != null)
                         {
-                            if(!_parameters.ContainsKey(parameter))
+                            if (!_parameters.ContainsKey(parameter))
                             {
                                 _parameters.Add(parameter, values);
                                 values = new ArrayList();
@@ -71,13 +96,13 @@ namespace apophis.Tools
                         break;
 
                     // found parameter with enclosed value
-                            case 3:
+                    case 3:
                         // if paramater was still waiting,
                         // then add parameter and values-collection to _parameters
                         // clear values
-                        if(parameter != null)
+                        if (parameter != null)
                         {
-                            if(!_parameters.ContainsKey(parameter))
+                            if (!_parameters.ContainsKey(parameter))
                             {
                                 _parameters.Add(parameter, values);
                                 values = new ArrayList();
@@ -90,26 +115,26 @@ namespace apophis.Tools
                         parts[2] = remover.Replace(parts[2], "$1");
                         values.Add(parts[2]);
 
-                        if(!_parameters.ContainsKey(parameter))
+                        if (!_parameters.ContainsKey(parameter))
                             _parameters.Add(parameter, values);
-                        
-                        parameter=null;
+
+                        parameter = null;
                         values = new ArrayList();
                         break;
                 }
             }
             // if  final parameter is still waiting,
             // add parameter and values to _parameters
-            if(parameter != null)
+            if (parameter != null)
             {
-                if(!_parameters.ContainsKey(parameter))
+                if (!_parameters.ContainsKey(parameter))
                     _parameters.Add(parameter, values);
             }
         }
 
         // Retrieve a parameter value-collection if it exists
         // (overriding C# indexer property)
-        public ArrayList this [string Param]
+        public ArrayList this[string Param]
         {
             get
             {
