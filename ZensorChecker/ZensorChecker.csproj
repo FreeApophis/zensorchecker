@@ -76,6 +76,9 @@
     <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
     <DefineConstants>DEBUG;TRACE;GUI</DefineConstants>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.Targets" />
   <ItemGroup>
     <Reference Include="System" />
@@ -136,6 +139,7 @@
     <EmbeddedResource Include="Resources\falsepositivs.txt">
       <LogicalName>falsepositivs.txt</LogicalName>
     </EmbeddedResource>
+    <None Include="app.config" />
     <None Include="Resources\gpl.txt" />
   </ItemGroup>
   <ItemGroup>

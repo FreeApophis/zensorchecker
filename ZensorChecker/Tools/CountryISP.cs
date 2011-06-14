@@ -98,6 +98,10 @@ namespace apophis.ZensorChecker
             while ((line = reader.ReadLine()) != null)
             {
                 MatchCollection mc = boldMatch.Matches(line);
+                if (mc.Count == 0)
+                {
+                    mc = strongMatch.Matches(line);
+                }
                 if (mc.Count > 6)
                 {
                     externalIP = IPAddress.Parse(mc[0].Value);

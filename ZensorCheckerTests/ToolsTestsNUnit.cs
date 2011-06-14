@@ -1,20 +1,15 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using apophis.ZensorChecker;
+﻿using System.Linq;
 using System.Net;
+using apophis.ZensorChecker;
 using Bdev.Net.Dns;
+using NUnit.Framework;
 
 namespace ZensorCheckerTests
 {
-    [TestClass]
-    public class ToolsTests
+    [TestFixture]
+    class ToolsTestsNUnit
     {
-
-
-        [TestMethod]
+        [Test]
         public void CountryISPTest()
         {
             CountryISP isp = new CountryISP();
@@ -28,7 +23,7 @@ namespace ZensorCheckerTests
             Assert.AreEqual("DSL", isp.Networkspeed);
         }
 
-        [TestMethod]
+        [Test]
         public void DNSHelperTest()
         {
             Assert.AreEqual(IPAddress.Parse("208.67.222.222"), DNSHelper.OpenDNS1);
