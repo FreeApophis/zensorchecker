@@ -98,20 +98,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CensorshipReport.cs" />
-    <Compile Include="dnsclient\ANameRecord.cs" />
-    <Compile Include="dnsclient\Enums.cs" />
-    <Compile Include="dnsclient\InvalidResponseException.cs" />
-    <Compile Include="dnsclient\MXRecord.cs" />
-    <Compile Include="dnsclient\NoResponseException.cs" />
-    <Compile Include="dnsclient\NSRecord.cs" />
-    <Compile Include="dnsclient\Pointer.cs" />
-    <Compile Include="dnsclient\Question.cs" />
-    <Compile Include="dnsclient\RecordBase.cs" />
-    <Compile Include="dnsclient\Request.cs" />
-    <Compile Include="dnsclient\Resolver.cs" />
-    <Compile Include="dnsclient\ResourceRecord.cs" />
-    <Compile Include="dnsclient\Response.cs" />
-    <Compile Include="dnsclient\SoaRecord.cs" />
     <Compile Include="DNSHelper.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
@@ -139,7 +125,6 @@
     <EmbeddedResource Include="Resources\falsepositivs.txt">
       <LogicalName>falsepositivs.txt</LogicalName>
     </EmbeddedResource>
-    <None Include="app.config" />
     <None Include="Resources\gpl.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -158,5 +143,11 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DnsClient\DnsClient.csproj">
+      <Project>{416B5824-0AF1-4D1D-B74C-ABD8B539492C}</Project>
+      <Name>DnsClient</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

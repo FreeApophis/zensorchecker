@@ -31,8 +31,9 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Linq;
 
-using Bdev.Net.Dns;
+using Heijden.DNS;
 
 namespace apophis.ZensorChecker
 {
@@ -53,6 +54,7 @@ namespace apophis.ZensorChecker
         private string provider;
         private string country;
         private string reporter;
+        private Resolver openDnsResolver;
 
         public StopSpider(IPAddress providerDNS, IPAddress censorRedirect, string provider, string country, string reporter)
         {
@@ -63,6 +65,7 @@ namespace apophis.ZensorChecker
             this.provider = provider;
             this.country = country;
             this.reporter = reporter;
+            this.openDnsResolver = new Resolver(Resolver.DefaultDnsServers[0]);
 
             // add an initial list in randomized order, this will also prevent adding already known urls!
             SortedList<int, string> rlist = new SortedList<int, string>();
@@ -116,15 +119,16 @@ namespace apophis.ZensorChecker
 
         private Regex hrefMatch = new Regex("(?<=href=\"http://)[^\"]*(?=\")");
 
-        private void FindNewUrls(object spiderInfo)
+        private void FindNewUrls(object o)
         {
+            var spiderInfo = (SpiderInfo)o;
             running++;
             // We cannot use WebClient or similar, since we cannot rely on the DNS resolution!
             TcpClient client = new TcpClient();
-            IPAddress ip = GetRealIPFromUri(((SpiderInfo)spiderInfo).URL);
+            IPAddress ip = DNSHelper.ResolveUri(openDnsResolver, spiderInfo.URL).First();
             //check for censorship
 
-            CheckIfCensored((SpiderInfo)spiderInfo);
+            CheckIfCensored(spiderInfo);
 
             if (ip == null)
             {
@@ -190,98 +194,14 @@ namespace apophis.ZensorChecker
             }
             try
             {
-                Request request = new Request();
-                request.AddQuestion(new Question(spiderInfo.URL, DnsType.ANAME, DnsClass.IN));
-                Response response = Resolver.Lookup(request, providerDNS);
-                if (((ANameRecord)response.Answers[0].Record).IPAddress.ToString() == this.censorRedirect.ToString())
-                {
-                    switch (PostNewFoundUrl(spiderInfo.URL))
-                    {
-                        case ReturnState.OK:
-                            break;
-                        case ReturnState.Failed:
-                            break;
-                        case ReturnState.NotNew:
-                            break;
-                    }
-
-
-                    Console.WriteLine("> " + spiderInfo.URL + " (" + spiderInfo.Depth + ") [NEW Censored]");
-                    spiderInfo.Censored = true;
-
-                    TextWriter tw = new StreamWriter("spider.txt", true);
-                    tw.WriteLine(spiderInfo.URL);
-                    tw.Close();
-
-                }
+                // TODO: censored
             }
             catch (Exception) { }
-        }
-
-
-        private IPAddress GetRealIPFromUri(string uri)
-        {
-            try
-            {
-                Request request = new Request();
-                request.AddQuestion(new Question(uri, DnsType.ANAME, DnsClass.IN));
-                Response response = Resolver.Lookup(request, DNSHelper.OpenDNS1);
-
-                if (response.Answers[0].Record is ANameRecord)
-                {
-                    return ((ANameRecord)response.Answers[0].Record).IPAddress;
-                }
-
-                // CNAME redirect (infinite loop?)
-                if (response.Answers[0].Record is NSRecord)
-                {
-                    return GetRealIPFromUri(((NSRecord)response.Answers[0].Record).DomainName);
-                }
-            }
-            catch (ArgumentException)
-            {
-                //Invalid Domain name ignored
-            }
-            catch (NoResponseException)
-            {
-                //happens
-            }
-            catch (OverflowException)
-            {
-                //BUG in DNSResolver, should update to another one!
-            }
-            return null;
         }
 
         public enum ReturnState
         {
             OK, NotNew, Failed
-        }
-
-        public ReturnState PostNewFoundUrl(string url)
-        {
-            WebClient web = new WebClient();
-
-            web.QueryString.Add("url", url); // new URL
-            web.QueryString.Add("rip", this.censorRedirect.ToString()); // Redirected to
-            web.QueryString.Add("cnt", this.country); // Country
-            web.QueryString.Add("isp", this.provider); // ISP
-            web.QueryString.Add("rep", this.reporter); // Reporter
-
-            string s = web.DownloadString("http://apophis.ch/zensorchecker.php");
-            if (s.EndsWith("[OK]"))
-            {
-                return ReturnState.OK;
-            }
-            else if (s.EndsWith("[NOTNEW]"))
-            {
-                return ReturnState.NotNew;
-            }
-            else
-            {
-                return ReturnState.Failed;
-            }
-
         }
     }
 }

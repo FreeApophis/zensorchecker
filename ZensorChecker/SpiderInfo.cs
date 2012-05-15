@@ -30,7 +30,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
-using Bdev.Net.Dns;
+using Heijden.DNS;
 
 namespace apophis.ZensorChecker
 {
@@ -39,11 +39,11 @@ namespace apophis.ZensorChecker
 
         private string url;
 
-        public string URL
+        public Uri URL
         {
             get
             {
-                return url;
+                return new Uri(url);
             }
         }
 

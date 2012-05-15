@@ -28,6 +28,9 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.IO;
 using System.Net;
+using System.Linq;
+
+using Heijden.DNS;
 
 namespace apophis.ZensorChecker
 {
@@ -36,26 +39,6 @@ namespace apophis.ZensorChecker
     /// </summary>
     public class DNSHelper
     {
-        private static IPAddress opendns1 = IPAddress.Parse("208.67.222.222");
-
-        public static IPAddress OpenDNS1
-        {
-            get
-            {
-                return opendns1;
-            }
-        }
-
-        private static IPAddress opendns2 = IPAddress.Parse("208.67.220.220");
-
-        public static IPAddress OpenDNS2
-        {
-            get
-            {
-                return opendns2;
-            }
-        }
-
         public static IEnumerable<IPAddress> GetLocalDNS()
         {
             switch (Environment.OSVersion.Platform)
@@ -101,7 +84,12 @@ namespace apophis.ZensorChecker
             return dnsservers;
         }
 
+        public static IEnumerable<IPAddress> ResolveUri(Resolver resolver, Uri uri)
+        {
+            var response = resolver.Query(uri.Host, QType.A, QClass.IN);
 
+            return response.Answers.Where(a => a.Type == Heijden.DNS.Type.A).Select(a => IPAddress.Parse(a.RECORD.ToString()));
+        }
 
         public static string ReverseDNS(string ip)
         {

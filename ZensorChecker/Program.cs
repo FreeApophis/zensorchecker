@@ -31,7 +31,7 @@ using System.Reflection;
 using System.Threading;
 
 using apophis.Tools;
-using Bdev.Net.Dns;
+using Heijden.DNS;
 
 #if GUI
 using System.Windows.Forms;
@@ -45,7 +45,6 @@ namespace apophis.ZensorChecker
     {
         public static void Main(string[] args)
         {
-
             Arguments argsParsed = new Arguments(args);
 
             string country = "none";

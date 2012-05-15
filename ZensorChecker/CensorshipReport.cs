@@ -28,9 +28,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Reflection;
-
-using Bdev.Net.Dns;
 using System.Threading;
+using System.Linq;
+
+using Heijden.DNS;
 
 namespace apophis.ZensorChecker
 {
@@ -104,6 +105,10 @@ namespace apophis.ZensorChecker
 
         private bool reportReady = false;
 
+        private Resolver referenceResolver1;
+        private Resolver referenceResolver2;
+        private IEnumerable<Resolver> localResolvers;
+
         public CensorshipReport(string provider, string country, string reporter)
         {
             // Get the list from the resources
@@ -129,7 +134,7 @@ namespace apophis.ZensorChecker
             this.dnsServers = DNSHelper.GetLocalDNS();
             foreach (IPAddress dnsserver in this.dnsServers)
             {
-                if ((dnsserver.ToString() == DNSHelper.OpenDNS1.ToString()) || (dnsserver.ToString() == DNSHelper.OpenDNS2.ToString()))
+                if ((dnsserver.ToString() == Resolver.DefaultDnsServers[0].ToString()) || (dnsserver.ToString() == Resolver.DefaultDnsServers[1].ToString()))
                 {
                     Console.Write("Warning: one of your DNS Servers is an OpenDNS Server, which is not censored. Check might give invalid results.");
                     Thread.Sleep(5000);
@@ -141,6 +146,11 @@ namespace apophis.ZensorChecker
                     Thread.Sleep(5000);
                 }
             }
+
+            // Resolvers
+            referenceResolver1 = new Resolver(Resolver.DefaultDnsServers[0]);
+            referenceResolver2 = new Resolver(Resolver.DefaultDnsServers[0]);
+            localResolvers = dnsServers.Select(s => new Resolver(s, Resolver.DefaultPort));
 
             //Date
             this.date = DateTime.Now;
@@ -198,10 +208,7 @@ namespace apophis.ZensorChecker
                 i++;
                 try
                 {
-                    Request request = new Request();
-                    request.AddQuestion(new Question(url, DnsType.ANAME, DnsClass.IN));
-                    Response response = Resolver.Lookup(request, providerDNS);
-                    if (((ANameRecord)response.Answers[0].Record).IPAddress.ToString() == this.censorRedirect.ToString())
+                    if (false /*if censored*/)
                     {
                         Console.WriteLine("> " + i + "/" + urlsToTest.Count + " : " + url + " [Censored]");
                         //Console.Write("x");
@@ -243,64 +250,11 @@ namespace apophis.ZensorChecker
             {
                 try
                 {
+                    var ref1 = DNSHelper.ResolveUri(referenceResolver1, new Uri(url));
+                    var ref2 = DNSHelper.ResolveUri(referenceResolver1, new Uri(url));
 
-                    Request request = new Request();
-                    request.AddQuestion(new Question(url, DnsType.ANAME, DnsClass.IN));
 
-                    Response openDNSresp1 = Resolver.Lookup(request, DNSHelper.OpenDNS1);
-                    Response openDNSresp2 = Resolver.Lookup(request, DNSHelper.OpenDNS1);
-                    List<Response> providerResp = new List<Response>();
-                    foreach (IPAddress ip in this.dnsServers)
-                    {
-                        providerResp.Add(Resolver.Lookup(request, ip));
-                    }
-
-                    if (openDNSresp1.Answers.Length == 1)
-                    {
-                        // both ODNS Servers agree on a single server
-                        if (openDNSresp1.Answers.Length == openDNSresp2.Answers.Length)
-                        {
-                            // both ODNS Server agree on a single IP
-                            if ((((ANameRecord)openDNSresp1.Answers[0].Record).IPAddress.ToString()) ==
-                               (((ANameRecord)openDNSresp2.Answers[0].Record).IPAddress.ToString()))
-                            {
-                                // this single IP agrees with your ISPs DNS
-                                if ((((ANameRecord)openDNSresp1.Answers[0].Record).IPAddress.ToString()) ==
-                                   (((ANameRecord)providerResp[0].Answers[0].Record).IPAddress.ToString()))
-                                {
-                                    Console.Write("o");
-                                    // this single IP doesnt agree with your ISP, this is potentially a censored IP
-                                }
-                                else
-                                {
-                                    Console.Write("x");
-                                    if (censoringIPs.ContainsKey(((ANameRecord)providerResp[0].Answers[0].Record).IPAddress.ToString()))
-                                    {
-                                        censoringIPs[((ANameRecord)providerResp[0].Answers[0].Record).IPAddress.ToString()]++;
-                                    }
-                                    else
-                                    {
-                                        censoringIPs.Add(((ANameRecord)providerResp[0].Answers[0].Record).IPAddress.ToString(), 1);
-                                    }
-                                }
-
-                            }
-                            else
-                            {
-                                Console.Write("-");
-                            }
-                        }
-                        else
-                        {
-
-                        }
-                    }
-                    else
-                    {
-                        // we ignore round robin entries for the search for the censorhip redirect IP
-                        // because its easier
-                        Console.Write("-");
-                    }
+                    // TODO
                 }
                 catch (Exception)
                 {

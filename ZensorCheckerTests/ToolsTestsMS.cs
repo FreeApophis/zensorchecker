@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using System.Net;
 using apophis.ZensorChecker;
-using Bdev.Net.Dns;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Heijden.DNS;
 
 namespace ZensorCheckerTests
 {
@@ -36,11 +36,11 @@ namespace ZensorCheckerTests
 
             foreach (var dnsServer in dnsServers)
             {
-                Request request = new Request();
-                request.AddQuestion(new Question("google.com", DnsType.ANAME, DnsClass.IN));
-                Response response = Resolver.Lookup(request, dnsServer);
+                //Request request = new Request();
+                //request.AddQuestion(new Question("google.com", DnsType.ANAME, DnsClass.IN));
+                //Response response = Resolver.Lookup(request, dnsServer);
 
-                var address = ((ANameRecord)response.Answers[0].Record).IPAddress;
+                //var address = ((ANameRecord)response.Answers[0].Record).IPAddress;
 
                 Assert.IsNotNull(address);
             }

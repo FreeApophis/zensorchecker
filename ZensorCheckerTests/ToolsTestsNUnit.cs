@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using System.Net;
 using apophis.ZensorChecker;
-using Bdev.Net.Dns;
 using NUnit.Framework;
 
 namespace ZensorCheckerTests
