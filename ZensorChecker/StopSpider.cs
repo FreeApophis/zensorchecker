@@ -82,12 +82,6 @@ namespace apophis.ZensorChecker
                 spiderlist.Add(new SpiderInfo(uri, 0));
                 spidercheck.Add(uri, true);
             }
-
-        }
-
-        public void PublishNewUrls()
-        {
-
         }
 
         private bool crawl = true;

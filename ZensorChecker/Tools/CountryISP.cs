@@ -35,57 +35,17 @@ namespace apophis.ZensorChecker
     /// </summary>
     public class CountryISP
     {
-        private IPAddress externalIP;
-
-        public IPAddress ExternalIP
-        {
-            get { return externalIP; }
-        }
-
-        private string country;
-
-        public string Country
-        {
-            get { return country; }
-        }
-
-        private string isp;
-
-        public string Isp
-        {
-            get { return isp; }
-        }
-
-        private string region;
-
-        public string Region
-        {
-            get { return region; }
-        }
-
-        private string city;
-
-        public string City
-        {
-            get { return city; }
-        }
-
-        private string timezone;
-
-        public string Timezone
-        {
-            get { return timezone; }
-        }
-
-        private string networkspeed;
-
-        public string Networkspeed
-        {
-            get { return networkspeed; }
-        }
+        public IPAddress ExternalIP { get; private set; }
+        public string Country { get; private set; }
+        public string Isp { get; private set; }
+        public string Region { get; private set; }
+        public string City { get; private set; }
+        public string Timezone { get; private set; }
+        public string Networkspeed { get; private set; }
 
         private Regex strongMatch = new Regex(@"(?<=<strong>)[^<]*(?=</strong>)");
         private Regex boldMatch = new Regex(@"(?<=<b>)[^<]*(?=</b>)");
+
         public CountryISP()
         {
             WebClient web = new WebClient();
@@ -95,6 +55,7 @@ namespace apophis.ZensorChecker
 
             StreamReader reader = new StreamReader(web.OpenRead("http://www.ip2location.com/ib2/"));
             string line;
+            int index = 0;
             while ((line = reader.ReadLine()) != null)
             {
                 MatchCollection mc = boldMatch.Matches(line);
@@ -102,15 +63,43 @@ namespace apophis.ZensorChecker
                 {
                     mc = strongMatch.Matches(line);
                 }
+                if (mc.Count == 1)
+                {
+                    switch (index)
+                    {
+                        case 0:
+                            ExternalIP = IPAddress.Parse(mc[0].Value);
+                            break;
+                        case 1:
+                            Isp = mc[0].Value;
+                            break;
+                        case 2:
+                            Country = mc[0].Value;
+                            break;
+                        case 3:
+                            Region = mc[0].Value;
+                            break;
+                        case 4:
+                            City = mc[0].Value;
+                            break;
+                        case 5:
+                            Timezone = mc[0].Value;
+                            break;
+                        case 6:
+                            Networkspeed = mc[0].Value;
+                            break;
+                    }
+                    index++;
+                }
                 if (mc.Count > 6)
                 {
-                    externalIP = IPAddress.Parse(mc[0].Value);
-                    isp = mc[1].Value;
-                    country = mc[2].Value;
-                    region = mc[3].Value;
-                    city = mc[4].Value;
-                    timezone = mc[5].Value;
-                    networkspeed = mc[6].Value;
+                    ExternalIP = IPAddress.Parse(mc[0].Value);
+                    Isp = mc[1].Value;
+                    Country = mc[2].Value;
+                    Region = mc[3].Value;
+                    City = mc[4].Value;
+                    Timezone = mc[5].Value;
+                    Networkspeed = mc[6].Value;
                 }
             }
         }

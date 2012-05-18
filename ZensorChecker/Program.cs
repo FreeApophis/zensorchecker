@@ -32,6 +32,7 @@ using System.Threading;
 
 using apophis.Tools;
 using Heijden.DNS;
+using System.Linq;
 
 #if GUI
 using System.Windows.Forms;
@@ -45,7 +46,21 @@ namespace apophis.ZensorChecker
     {
         public static void Main(string[] args)
         {
-            Arguments argsParsed = new Arguments(args);
+
+            WebSpider webSpider = new WebSpider(Enumerable.Empty<Uri>(), new Resolver(Resolver.DefaultDnsServers[0]));
+
+            webSpider.GetDocument(new Uri("http://thomasbruderer.ch/nothinghere"));
+
+            webSpider.GetDocument(new Uri("http://projects.piratenpartei.ch/"));
+            webSpider.GetDocument(new Uri("http://forum.piratenpartei.ch/"));
+            webSpider.GetDocument(new Uri("http://piratenpartei.ch/"));
+            webSpider.GetDocument(new Uri("http://download.apophis.ch/"), null, webSpider.PrintUrl);
+            webSpider.GetDocument(new Uri("http://download.apophis.ch/audio/FerienQuizXIII.ogg"));
+
+            return;
+
+
+            var argsParsed = new Arguments(args);
 
             string country = "none";
             string provider = "ISP";

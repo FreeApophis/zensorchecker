@@ -37,11 +37,14 @@ namespace apophis.Tools
     public class Arguments
     {
         // Variables
-        private Hashtable _parameters;
+        private Hashtable parameters;
 
         public Hashtable Parameters
         {
-            get { return _parameters; }
+            get
+            {
+                return parameters;
+            }
         }
 
         /// <summary>
@@ -49,11 +52,9 @@ namespace apophis.Tools
         /// </summary>
         public Arguments(string[] Args)
         {
-            _parameters = new Hashtable();
-            Regex splitter = new Regex(@"^-|^/|=|:",
-                RegexOptions.IgnoreCase | RegexOptions.Compiled);
-            Regex remover = new Regex(@"^['""]?(.*?)['""]?$",
-                RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            parameters = new Hashtable();
+            Regex splitter = new Regex(@"^-|^/|=|:", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+            Regex remover = new Regex(@"^['""]?(.*?)['""]?$", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
             string parameter = null;
             string[] parts;
@@ -86,9 +87,9 @@ namespace apophis.Tools
                         // clear values
                         if (parameter != null)
                         {
-                            if (!_parameters.ContainsKey(parameter))
+                            if (!parameters.ContainsKey(parameter))
                             {
-                                _parameters.Add(parameter, values);
+                                parameters.Add(parameter, values);
                                 values = new ArrayList();
                             }
                         }
@@ -102,9 +103,9 @@ namespace apophis.Tools
                         // clear values
                         if (parameter != null)
                         {
-                            if (!_parameters.ContainsKey(parameter))
+                            if (!parameters.ContainsKey(parameter))
                             {
-                                _parameters.Add(parameter, values);
+                                parameters.Add(parameter, values);
                                 values = new ArrayList();
                             }
                         }
@@ -115,8 +116,8 @@ namespace apophis.Tools
                         parts[2] = remover.Replace(parts[2], "$1");
                         values.Add(parts[2]);
 
-                        if (!_parameters.ContainsKey(parameter))
-                            _parameters.Add(parameter, values);
+                        if (!parameters.ContainsKey(parameter))
+                            parameters.Add(parameter, values);
 
                         parameter = null;
                         values = new ArrayList();
@@ -127,8 +128,8 @@ namespace apophis.Tools
             // add parameter and values to _parameters
             if (parameter != null)
             {
-                if (!_parameters.ContainsKey(parameter))
-                    _parameters.Add(parameter, values);
+                if (!parameters.ContainsKey(parameter))
+                    parameters.Add(parameter, values);
             }
         }
 
@@ -138,7 +139,7 @@ namespace apophis.Tools
         {
             get
             {
-                return (ArrayList)(_parameters[Param]);
+                return (ArrayList)(parameters[Param]);
             }
         }
     }
